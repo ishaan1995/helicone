@@ -29,7 +29,9 @@ export default Home;
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const client = createPagesServerClient(context);
+  const client = createPagesServerClient(context, {
+    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  });
   console.log(
     "testing client",
     await client.from("user_settings").select("*").single()
