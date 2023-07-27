@@ -37,7 +37,7 @@ export const getServerSideProps = async (
   );
   console.log(
     "testing client",
-    await client.from("user_settings").select("*").single()
+    await client.auth.getUser();
   );
 
   const supabase = new SupabaseServerWrapper(context).getClient();
