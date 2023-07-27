@@ -35,10 +35,7 @@ export const getServerSideProps = async (
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_URL
   );
-  console.log(
-    "testing client",
-    await client.auth.getUser();
-  );
+  console.log("testing client", await client.auth.getUser());
 
   const supabase = new SupabaseServerWrapper(context).getClient();
   const {
