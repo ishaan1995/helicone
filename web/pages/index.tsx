@@ -29,7 +29,9 @@ export default Home;
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const client = createPagesServerClient(context);
+  const client = createPagesServerClient(context, {
+    supabaseUrl: process.env.SUPABASE_URL,
+  });
   console.log(
     "env",
     process.env.NEXT_PUBLIC_SUPABASE_URL,
