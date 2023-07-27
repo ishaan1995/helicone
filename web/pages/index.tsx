@@ -11,6 +11,7 @@ import MetaData from "../components/shared/metaData";
 import HomePage from "../components/templates/home/homePage";
 import { DEMO_EMAIL } from "../lib/constants";
 import { SupabaseServerWrapper } from "../lib/wrappers/supabase";
+import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
 
 interface HomeProps {}
 
@@ -20,16 +21,7 @@ const Home = (props: HomeProps) => {
 
   const user = useUser();
 
-  if (user && user.email !== DEMO_EMAIL) {
-    router.push("/dashboard");
-    return <LoadingAnimation title="Redirecting you to your dashboard..." />;
-  }
-
-  return (
-    <MetaData title="Home">
-      <HomePage />
-    </MetaData>
-  );
+  return <MetaData title="Home">{user ? user.email : "no user"}</MetaData>;
 };
 
 export default Home;
@@ -37,6 +29,12 @@ export default Home;
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
+  const client = createPagesServerClient(context);
+  console.log(
+    "testing client",
+    await client.from("user_settings").select("*").single()
+  );
+
   const supabase = new SupabaseServerWrapper(context).getClient();
   const {
     data: { session },
