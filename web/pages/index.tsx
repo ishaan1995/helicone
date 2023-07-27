@@ -31,6 +31,11 @@ export const getServerSideProps = async (
 ) => {
   const client = createPagesServerClient(context);
   console.log(
+    "env",
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_URL
+  );
+  console.log(
     "testing client",
     await client.from("user_settings").select("*").single()
   );
