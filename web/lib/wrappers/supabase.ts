@@ -25,6 +25,8 @@ export class SupabaseServerWrapper<T> {
   client: SupabaseClient<Database>;
   ctx: SSRContext<T>;
   constructor(ctx: SSRContext<T>, options?: SupabaseServerWrapperOptions) {
+    console.log("SupabaseServerWrapper", ctx.req.cookies);
+
     const supabaseUrl = options?.supabaseUrl ?? serverSupabaseUrl ?? "";
     this.ctx = ctx;
     this.client = createPagesServerClient<Database>(ctx, {
