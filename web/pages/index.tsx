@@ -30,7 +30,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
   const client = createPagesServerClient(context, {
-    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    supabaseUrl: process.env.SUPBASE_URL,
   });
   console.log(
     "testing client",
