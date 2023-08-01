@@ -78,7 +78,7 @@ const RequestsPageV2 = (props: RequestsPageV2Props) => {
     isCached = false,
     initialRequestId,
   } = props;
-  const [isLive, setIsLive] = useLocalStorage("isLive", false);
+  const [isLive, setIsLive] = useLocalStorage("isRequestLive", false);
 
   // set the initial selected data on component load
   useEffect(() => {

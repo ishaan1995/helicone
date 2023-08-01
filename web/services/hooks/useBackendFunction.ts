@@ -17,6 +17,7 @@ export interface BackendMetricsCall<T> {
   endpoint: string;
   key?: string;
   postProcess?: (data: T) => T;
+  isLive?: boolean;
 }
 
 export type MetricsBackendBody = {
@@ -34,14 +35,14 @@ export function useBackendMetricCall<T>({
   endpoint,
   key,
   postProcess,
+  isLive,
 }: BackendMetricsCall<T>) {
   return useQuery<T>({
-    queryKey: [endpoint, params, "" + key],
-    retry: false,
+    queryKey: ["" + key, endpoint, params],
     queryFn: async (query) => {
       const { timeFilter, userFilters, dbIncrement, timeZoneDifference } = query
-        .queryKey[1] as BackendMetricsCall<T>["params"];
-      const res = fetch(endpoint, {
+        .queryKey[2] as BackendMetricsCall<T>["params"];
+      const res = fetch(query.queryKey[1] as string, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -63,5 +64,6 @@ export function useBackendMetricCall<T>({
       return postProcess(await res);
     },
     refetchOnWindowFocus: false,
+    refetchInterval: isLive ? 2_000 : false,
   });
 }

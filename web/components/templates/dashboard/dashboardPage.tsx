@@ -1,5 +1,7 @@
 import {
   ArrowPathIcon,
+  BoltIcon,
+  BoltSlashIcon,
   ChartBarIcon,
   CloudArrowDownIcon,
   CurrencyDollarIcon,
@@ -41,6 +43,8 @@ import LoadingAnimation from "../../shared/loadingAnimation";
 import { RenderBarChart } from "../../shared/metrics/barChart";
 import MainGraph from "./graphs/mainGraph";
 import { DoubleAreaChartData } from "../../shared/metrics/doubleAreaChart";
+import { Switch } from "@headlessui/react";
+import { useLocalStorage } from "../../../services/hooks/localStorage";
 
 interface DashboardPageProps {
   user: User;
@@ -64,7 +68,8 @@ export type DashboardMode = "requests" | "costs" | "errors";
 
 const DashboardPage = (props: DashboardPageProps) => {
   const { user } = props;
-  const router = useRouter();
+
+  const [isLive, setIsLive] = useLocalStorage("isDashboardLive", false);
   const [interval, setInterval] = useState<TimeInterval>("24h");
   const [timeFilter, setTimeFilter] = useState<{
     start: Date;
@@ -75,21 +80,10 @@ const DashboardPage = (props: DashboardPageProps) => {
   });
   const [open, setOpen] = useState(false);
 
-  const sessionStorageKey =
-    typeof window !== "undefined" ? sessionStorage.getItem("currentKey") : null;
-
-  const [apiKeyFilter, setApiKeyFilter] = useState<string | null>(
-    sessionStorageKey
-  );
-
   const [advancedFilters, setAdvancedFilters] = useState<UIFilterRow[]>([]);
 
   const debouncedAdvancedFilters = useDebounce(advancedFilters, 500);
 
-  const [mode, setMode] = useState<DashboardMode>("requests");
-  const [timeZoneDifference, setTimeZoneDifference] = useState<number>(
-    new Date().getTimezoneOffset()
-  );
   const timeIncrement = getTimeInterval(timeFilter);
 
   const { authorized } = useGetAuthorized(user.id);
@@ -97,9 +91,10 @@ const DashboardPage = (props: DashboardPageProps) => {
   const { metrics, filterMap, overTimeData, isAnyLoading } = useDashboardPage({
     timeFilter,
     uiFilters: debouncedAdvancedFilters,
-    apiKeyFilter,
-    timeZoneDifference,
+    apiKeyFilter: null,
+    timeZoneDifference: new Date().getTimezoneOffset(),
     dbIncrement: timeIncrement,
+    isLive,
   });
 
   const combineRequestsAndErrors = () => {
@@ -192,6 +187,57 @@ const DashboardPage = (props: DashboardPageProps) => {
               )}
             />
           </button>
+        }
+        actions={
+          <>
+            <Switch.Group
+              as="div"
+              className="flex items-center space-x-3 hover:cursor-pointer"
+            >
+              <Switch.Label as="span" className="text-sm">
+                <span className="font-semibold text-gray-700">Live</span>
+              </Switch.Label>
+              <Switch
+                checked={isLive}
+                onChange={setIsLive}
+                className={clsx(
+                  isLive ? "bg-emerald-500" : "bg-gray-200",
+                  "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                )}
+              >
+                <span className="sr-only">Use setting</span>
+                <span
+                  className={clsx(
+                    isLive ? "translate-x-5" : "translate-x-0",
+                    "pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                  )}
+                >
+                  <span
+                    className={clsx(
+                      isLive
+                        ? "opacity-0 duration-100 ease-out"
+                        : "opacity-100 duration-200 ease-in",
+                      "absolute inset-0 flex h-full w-full items-center justify-center transition-opacity"
+                    )}
+                    aria-hidden="true"
+                  >
+                    <BoltSlashIcon className="h-3 w-3 text-gray-400" />
+                  </span>
+                  <span
+                    className={clsx(
+                      isLive
+                        ? "opacity-100 duration-200 ease-in"
+                        : "opacity-0 duration-100 ease-out",
+                      "absolute inset-0 flex h-full w-full items-center justify-center transition-opacity"
+                    )}
+                    aria-hidden="true"
+                  >
+                    <BoltIcon className="h-3 w-3 text-emerald-500" />
+                  </span>
+                </span>
+              </Switch>
+            </Switch.Group>
+          </>
         }
       />
       {authorized ? (

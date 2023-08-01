@@ -65,6 +65,7 @@ export interface DashboardPageData {
   apiKeyFilter: string | null;
   timeZoneDifference: number;
   dbIncrement: TimeIncrement;
+  isLive: boolean;
 }
 
 export const useDashboardPage = ({
@@ -73,6 +74,7 @@ export const useDashboardPage = ({
   apiKeyFilter,
   timeZoneDifference,
   dbIncrement,
+  isLive,
 }: DashboardPageData) => {
   const filterMap = DASHBOARD_PAGE_TABLE_FILTERS as SingleFilterDef<any>[];
   const userFilters =
@@ -105,6 +107,7 @@ export const useDashboardPage = ({
           d.map((d) => ({ count: +d.count, time: new Date(d.time) }))
         );
       },
+      isLive: isLive,
     }),
     requests: useBackendMetricCall<Result<RequestsOverTime[], string>>({
       params,
@@ -115,6 +118,7 @@ export const useDashboardPage = ({
           d.map((d) => ({ count: +d.count, time: new Date(d.time) }))
         );
       },
+      isLive: isLive,
     }),
     costs: useBackendMetricCall<Result<CostOverTime[], string>>({
       params,
@@ -125,6 +129,7 @@ export const useDashboardPage = ({
           d.map((d) => ({ cost: +d.cost, time: new Date(d.time) }))
         );
       },
+      isLive: isLive,
     }),
     latency: useBackendMetricCall<Result<LatencyOverTime[], string>>({
       params,
@@ -135,6 +140,7 @@ export const useDashboardPage = ({
           d.map((d) => ({ duration: +d.duration, time: new Date(d.time) }))
         );
       },
+      isLive: isLive,
     }),
     users: useBackendMetricCall<Result<UsersOverTime[], string>>({
       params,
@@ -145,6 +151,7 @@ export const useDashboardPage = ({
           d.map((d) => ({ count: +d.count, time: new Date(d.time) }))
         );
       },
+      isLive: isLive,
     }),
   };
 
@@ -152,24 +159,29 @@ export const useDashboardPage = ({
     totalCost: useBackendMetricCall<Result<number, string>>({
       params,
       endpoint: "/api/metrics/totalCost",
+      isLive: isLive,
     }),
     totalRequests: useBackendMetricCall<Result<number, string>>({
       params,
       endpoint: "/api/metrics/totalRequests",
+      isLive: isLive,
     }),
     averageLatency: useBackendMetricCall<Result<number, string>>({
       params,
       endpoint: "/api/metrics/averageLatency",
+      isLive: isLive,
     }),
     averageTokensPerRequest: useBackendMetricCall<
       UnPromise<ReturnType<typeof getTokensPerRequest>>
     >({
       params,
       endpoint: "/api/metrics/averageTokensPerRequest",
+      isLive: isLive,
     }),
     activeUsers: useBackendMetricCall<Result<number, string>>({
       params,
       endpoint: "/api/metrics/activeUsers",
+      isLive: isLive,
     }),
   };
 
