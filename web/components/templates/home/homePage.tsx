@@ -52,6 +52,7 @@ import { BsDiscord } from "react-icons/bs";
 import NavBar from "../../shared/layout/navbar";
 import Footer from "../../shared/layout/footer";
 import NavBarV2 from "../../shared/layout/navBarV2";
+import StarButton from "../../shared/StarUs";
 
 const testimonials = [
   {
@@ -160,6 +161,7 @@ export default function HomePage() {
 
   return (
     <div className="flex-col w-full">
+      <StarButton repoURL="google.com" />
       <div className="bg-black">
         <div className="px-4 md:px-8 py-4 h-full min-h-[3rem] flex flex-col md:flex-row max-w-7xl gap-4 mx-auto w-full items-center justify-between">
           <div className="flex items-center">
