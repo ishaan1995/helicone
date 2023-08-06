@@ -24,6 +24,7 @@ export interface IHeliconeHeaders {
     omitResponse: boolean;
     omitRequest: boolean;
   };
+  parentRequestId: Nullable<string>;
 }
 
 export class HeliconeHeaders implements IHeliconeHeaders {
@@ -78,6 +79,7 @@ export class HeliconeHeaders implements IHeliconeHeaders {
         omitResponse: this.headers.get("Helicone-Omit-Response") === "true",
         omitRequest: this.headers.get("Helicone-Omit-Request") === "true",
       },
+      parentRequestId: this.headers.get("Helicone-Parent-Request-Id") ?? null,
     };
   }
 

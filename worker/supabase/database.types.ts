@@ -3,10 +3,35 @@ export type Json =
   | number
   | boolean
   | null
-  | { [key: string]: Json | undefined }
+  | { [key: string]: Json }
   | Json[]
 
 export interface Database {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          operationName?: string
+          query?: string
+          variables?: Json
+          extensions?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       cache_hits: {
@@ -22,20 +47,6 @@ export interface Database {
           created_at?: string
           request_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "cache_hits_request_id_fkey"
-            columns: ["request_id"]
-            referencedRelation: "request"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "cache_hits_request_id_fkey"
-            columns: ["request_id"]
-            referencedRelation: "request_rbac"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       feature_flags: {
         Row: {
@@ -56,14 +67,6 @@ export interface Database {
           id?: number
           org_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "feature_flags_org_id_fkey"
-            columns: ["org_id"]
-            referencedRelation: "organization"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       feedback: {
         Row: {
@@ -99,38 +102,6 @@ export interface Database {
           response_id?: string
           string_value?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "feedback_feedback_metric_id_fkey"
-            columns: ["feedback_metric_id"]
-            referencedRelation: "feedback_metrics"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "feedback_response_id_fkey"
-            columns: ["response_id"]
-            referencedRelation: "response"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "feedback_response_id_fkey"
-            columns: ["response_id"]
-            referencedRelation: "materialized_response_and_request"
-            referencedColumns: ["response_id"]
-          },
-          {
-            foreignKeyName: "feedback_response_id_fkey"
-            columns: ["response_id"]
-            referencedRelation: "response_and_request_rbac"
-            referencedColumns: ["response_id"]
-          },
-          {
-            foreignKeyName: "feedback_response_id_fkey"
-            columns: ["response_id"]
-            referencedRelation: "response_rbac"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       feedback_metrics: {
         Row: {
@@ -154,14 +125,6 @@ export interface Database {
           id?: number
           name?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "feedback_metrics_helicone_api_key_id_fkey"
-            columns: ["helicone_api_key_id"]
-            referencedRelation: "helicone_api_keys"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       helicone_api_keys: {
         Row: {
@@ -191,20 +154,6 @@ export interface Database {
           soft_delete?: boolean
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "helicone_api_keys_organization_id_fkey"
-            columns: ["organization_id"]
-            referencedRelation: "organization"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "helicone_api_keys_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       helicone_proxy_keys: {
         Row: {
@@ -231,20 +180,6 @@ export interface Database {
           provider_key_id?: string
           soft_delete?: boolean
         }
-        Relationships: [
-          {
-            foreignKeyName: "helicone_proxy_keys_org_id_fkey"
-            columns: ["org_id"]
-            referencedRelation: "organization"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "helicone_proxy_keys_provider_key_id_fkey"
-            columns: ["provider_key_id"]
-            referencedRelation: "provider_keys"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       layout: {
         Row: {
@@ -271,14 +206,6 @@ export interface Database {
           name?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "layout_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       organization: {
         Row: {
@@ -314,14 +241,6 @@ export interface Database {
           owner?: string
           soft_delete?: boolean
         }
-        Relationships: [
-          {
-            foreignKeyName: "organization_owner_fkey"
-            columns: ["owner"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       organization_member: {
         Row: {
@@ -342,20 +261,6 @@ export interface Database {
           org_role?: string
           organization?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "organization_member_member_fkey"
-            columns: ["member"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "organization_member_organization_fkey"
-            columns: ["organization"]
-            referencedRelation: "organization"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       prompt: {
         Row: {
@@ -379,7 +284,6 @@ export interface Database {
           name?: string
           prompt?: string
         }
-        Relationships: []
       }
       properties: {
         Row: {
@@ -409,26 +313,6 @@ export interface Database {
           user_id?: string | null
           value?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "properties_request_id_fkey"
-            columns: ["request_id"]
-            referencedRelation: "request"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "properties_request_id_fkey"
-            columns: ["request_id"]
-            referencedRelation: "request_rbac"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "properties_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       provider_keys: {
         Row: {
@@ -455,14 +339,6 @@ export interface Database {
           soft_delete?: boolean
           vault_key_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "provider_keys_org_id_fkey"
-            columns: ["org_id"]
-            referencedRelation: "organization"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       request: {
         Row: {
@@ -475,6 +351,7 @@ export interface Database {
           helicone_proxy_key_id: string | null
           helicone_user: string | null
           id: string
+          parent_id: string | null
           path: string
           prompt_id: string | null
           prompt_values: Json | null
@@ -492,6 +369,7 @@ export interface Database {
           helicone_proxy_key_id?: string | null
           helicone_user?: string | null
           id?: string
+          parent_id?: string | null
           path: string
           prompt_id?: string | null
           prompt_values?: Json | null
@@ -509,6 +387,7 @@ export interface Database {
           helicone_proxy_key_id?: string | null
           helicone_user?: string | null
           id?: string
+          parent_id?: string | null
           path?: string
           prompt_id?: string | null
           prompt_values?: Json | null
@@ -516,38 +395,6 @@ export interface Database {
           provider?: string
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "request_formatted_prompt_id_fkey"
-            columns: ["formatted_prompt_id"]
-            referencedRelation: "prompt"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "request_helicone_api_key_id_fkey"
-            columns: ["helicone_api_key_id"]
-            referencedRelation: "helicone_api_keys"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "request_helicone_org_id_fkey"
-            columns: ["helicone_org_id"]
-            referencedRelation: "organization"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "request_helicone_proxy_key_id_fkey"
-            columns: ["helicone_proxy_key_id"]
-            referencedRelation: "helicone_proxy_keys"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "request_helicone_user_fkey"
-            columns: ["helicone_user"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       response: {
         Row: {
@@ -583,7 +430,6 @@ export interface Database {
           request?: string
           status?: number | null
         }
-        Relationships: []
       }
       user_api_keys: {
         Row: {
@@ -607,14 +453,6 @@ export interface Database {
           key_name?: string | null
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "user_api_keys_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       user_settings: {
         Row: {
@@ -635,14 +473,6 @@ export interface Database {
           tier?: string
           user?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "user_settings_user_fkey"
-            columns: ["user"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       webhook_subscriptions: {
         Row: {
@@ -666,14 +496,6 @@ export interface Database {
           payload_type?: Json
           webhook_id?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "webhook_subscriptions_webhook_id_fkey"
-            columns: ["webhook_id"]
-            referencedRelation: "webhooks"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       webhooks: {
         Row: {
@@ -700,52 +522,14 @@ export interface Database {
           org_id?: string
           txt_record?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "webhooks_org_id_fkey"
-            columns: ["org_id"]
-            referencedRelation: "organization"
-            referencedColumns: ["id"]
-          }
-        ]
       }
     }
     Views: {
-      materialized_response_and_request: {
-        Row: {
-          is_cached: boolean | null
-          prompt_name: string | null
-          prompt_regex: string | null
-          request_body: Json | null
-          request_created_at: string | null
-          request_formatted_prompt_id: string | null
-          request_id: string | null
-          request_path: string | null
-          request_prompt_values: Json | null
-          request_properties: Json | null
-          request_user_id: string | null
-          response_body: Json | null
-          response_created_at: string | null
-          response_id: string | null
-          user_api_key_hash: string | null
-          user_api_key_preview: string | null
-          user_api_key_user_id: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_api_keys_user_id_fkey"
-            columns: ["user_api_key_user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
       metrics_rbac: {
         Row: {
           average_response_time: number | null
           average_tokens_per_response: number | null
         }
-        Relationships: []
       }
       model_metrics: {
         Row: {
@@ -755,7 +539,6 @@ export interface Database {
           sum_prompt_tokens: number | null
           sum_tokens: number | null
         }
-        Relationships: []
       }
       request_cache_rbac: {
         Row: {
@@ -771,7 +554,6 @@ export interface Database {
           properties: Json | null
           user_id: string | null
         }
-        Relationships: []
       }
       request_rbac: {
         Row: {
@@ -783,7 +565,6 @@ export interface Database {
           properties: Json | null
           user_id: string | null
         }
-        Relationships: []
       }
       response_and_request_rbac: {
         Row: {
@@ -804,14 +585,6 @@ export interface Database {
           response_id: string | null
           user_id: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "user_api_keys_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       response_rbac: {
         Row: {
@@ -820,7 +593,6 @@ export interface Database {
           id: string | null
           request: string | null
         }
-        Relationships: []
       }
       user_metrics_rbac: {
         Row: {
@@ -831,7 +603,6 @@ export interface Database {
           total_requests: number | null
           user_id: string | null
         }
-        Relationships: []
       }
     }
     Functions: {
@@ -846,13 +617,13 @@ export interface Database {
         | {
             Args: {
               this_associated_request_id: string
-              this_user_id: string
             }
             Returns: boolean
           }
         | {
             Args: {
               this_associated_request_id: string
+              this_user_id: string
             }
             Returns: boolean
           }
@@ -944,14 +715,6 @@ export interface Database {
           public?: boolean | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "buckets_owner_fkey"
-            columns: ["owner"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       migrations: {
         Row: {
@@ -972,7 +735,6 @@ export interface Database {
           id?: number
           name?: string
         }
-        Relationships: []
       }
       objects: {
         Row: {
@@ -1011,14 +773,6 @@ export interface Database {
           updated_at?: string | null
           version?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "objects_bucketId_fkey"
-            columns: ["bucket_id"]
-            referencedRelation: "buckets"
-            referencedColumns: ["id"]
-          }
-        ]
       }
     }
     Views: {
@@ -1050,7 +804,7 @@ export interface Database {
         Args: {
           name: string
         }
-        Returns: unknown
+        Returns: string[]
       }
       get_size_by_bucket: {
         Args: Record<PropertyKey, never>

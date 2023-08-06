@@ -86,8 +86,8 @@ const NavBarV2 = (props: NavBarV2Props) => {
               )}
             >
               <StarIcon className="h-3 w-3 text-gray-900 " />
-              <a className="hidden lg:block">Star us on Github</a>
-              <a className="lg:hidden">Github</a>
+              <div className="hidden lg:block">Star us on Github</div>
+              <div className="lg:hidden">Github</div>
             </Link>
             {user ? (
               <button
