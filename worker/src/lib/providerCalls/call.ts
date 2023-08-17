@@ -36,11 +36,15 @@ function removeHeliconeHeaders(request: Headers): Headers {
 export async function callProvider(props: CallProps): Promise<Response> {
   const { headers, method, apiBase, body, increaseTimeout, originalUrl } =
     props;
+  console.log("apiBase", apiBase);
   const apiBaseUrl = new URL(apiBase.replace(/\/$/, "")); // remove trailing slash if any
+  console.log("apiBaseUrl", apiBaseUrl);
+  console.log("originalUrl", originalUrl);
 
   const new_url = new URL(
     `${apiBaseUrl.origin}${originalUrl.pathname}${originalUrl.search}`
   );
+  console.log("new_url", new_url);
 
   const baseInit = { method, headers: removeHeliconeHeaders(headers) };
   const init = method === "GET" ? { ...baseInit } : { ...baseInit, body };

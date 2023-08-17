@@ -41,7 +41,7 @@ export async function proxyForwarder(
     }
 
     const rateLimitCheckResult = await checkRateLimit({
-      providerAuthHash: proxyRequest.providerAuthHash,
+      identifierKey: proxyRequest.providerAuthHash,
       heliconeProperties: proxyRequest.heliconeProperties,
       rateLimitKV: env.RATE_LIMIT_KV,
       rateLimitOptions: proxyRequest.rateLimitOptions,
@@ -138,7 +138,7 @@ export async function proxyForwarder(
       });
     }
     updateRateLimitCounter({
-      providerAuthHash: proxyRequest.providerAuthHash,
+      identifierKey: proxyRequest.providerAuthHash,
       heliconeProperties:
         proxyRequest.requestWrapper.heliconeHeaders.heliconeProperties,
       rateLimitKV: env.RATE_LIMIT_KV,

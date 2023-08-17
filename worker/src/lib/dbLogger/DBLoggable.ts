@@ -44,6 +44,7 @@ export interface DBLoggableProps {
     endTime?: Date;
   };
   tokenCalcUrl: string;
+  rateLimitKV: KVNamespace;
 }
 
 export function dbLoggableRequestFromProxyRequest(
@@ -141,6 +142,7 @@ export async function dbLoggableRequestFromAsyncLogModel(
       ),
     },
     tokenCalcUrl: env.TOKEN_COUNT_URL,
+    rateLimitKV: env.HELICONE_RATE_LIMIT_KV,
   });
 }
 
@@ -151,12 +153,14 @@ export class DBLoggable {
   private timing: DBLoggableProps["timing"];
   private provider: Provider;
   private tokenCalcUrl: string;
+  private rateLimitKV: KVNamespace;
   constructor(props: DBLoggableProps) {
     this.response = props.response;
     this.request = props.request;
     this.timing = props.timing;
     this.provider = props.request.provider;
     this.tokenCalcUrl = props.tokenCalcUrl;
+    this.rateLimitKV = props.rateLimitKV;
   }
 
   async waitForResponse(): Promise<string> {
