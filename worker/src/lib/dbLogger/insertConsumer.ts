@@ -108,9 +108,9 @@ export async function handleRequestQueue(
     await env.INSERT_KV.delete(message.body.requestBodyKVKey);
   });
 
-  const responseInsertPromise = dbClient
-    .from("response")
-    .upsert(response, { onConflict: "id", ignoreDuplicates: true });
+  // const responseInsertPromise = dbClient
+  //   .from("response")
+  //   .upsert(response, { onConflict: "id", ignoreDuplicates: true });
 
   const propertiesInsertPromise = dbClient
     .from("properties")
@@ -118,15 +118,15 @@ export async function handleRequestQueue(
 
   await Promise.all([
     deleteRequestBodyKvPromises,
-    responseInsertPromise,
+    // responseInsertPromise,
     propertiesInsertPromise,
   ]);
 
-  const responseInsertResult = await responseInsertPromise;
+  // const responseInsertResult = await responseInsertPromise;
 
-  if (responseInsertResult.error) {
-    console.log(`Failed to insert initial responses for batch.`);
-  }
+  // if (responseInsertResult.error) {
+  //   console.log(`Failed to insert initial responses for batch.`);
+  // }
 
   const propertiesInsertResult = await propertiesInsertPromise;
 
@@ -202,7 +202,7 @@ export async function handleResponseQueue(
 
   const responseInsertResult = await dbClient
     .from("response")
-    .upsert(responseList, { onConflict: "id", ignoreDuplicates: false });
+    .insert(responseList);
 
   if (responseInsertResult.error) {
     return batch.retryAll();
