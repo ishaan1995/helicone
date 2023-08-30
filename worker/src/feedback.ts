@@ -3,8 +3,6 @@ import { Env, hash } from ".";
 import { RequestWrapper } from "./lib/RequestWrapper";
 import { Database } from "../supabase/database.types";
 import { Result } from "./results";
-import { updateFeedbackInClickhouse } from "./lib/dbLogger/clickhouseLog";
-import { ClickhouseClientWrapper } from "./lib/db/clickhouse";
 
 interface FeedbackRequestBodyV2 {
   "helicone-id": string;
@@ -70,13 +68,7 @@ export async function handleFeedback(request: RequestWrapper, env: Env) {
     });
   }
 
-  await updateFeedbackInClickhouse(
-    new ClickhouseClientWrapper(env),
-    requestData.id,
-    feedbackData.id,
-    rating,
-    feedbackData.created_at
-  );
+  // TODO: Add feedback to clickhouse
 
   return new Response(
     JSON.stringify({

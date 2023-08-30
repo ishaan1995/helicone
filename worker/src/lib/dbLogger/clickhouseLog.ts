@@ -123,20 +123,3 @@ export async function logInClickhouse(
     ),
   ]);
 }
-
-export async function updateFeedbackInClickhouse(
-  clickhouseDb: ClickhouseClientWrapper,
-  requestId: string,
-  feedbackId: number,
-  rating: boolean,
-  feedbackCreatedAt: string
-) {
-  const query = `
-  ALTER TABLE response_copy_v3 
-  UPDATE rating = ${rating}, 
-         feedback_created_at = '${formatTimeString(feedbackCreatedAt)}', 
-         feedback_id = '${feedbackId}'
-  WHERE request_id = '${requestId}'`;
-
-  await clickhouseDb.dbUpdateClickhouse(query);
-}
