@@ -118,4 +118,4 @@ class HeliconeAsyncLogger:
                 body=dataclasses.asdict(request),
             )
         else:
-            raise ValueError(f"Unknown provider {provider}")
+            print(f"Unknown provider {provider}")
