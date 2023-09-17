@@ -21,6 +21,7 @@ export interface Env {
   TOKEN_COUNT_URL: string;
   RATE_LIMIT_KV: KVNamespace;
   CACHE_KV: KVNamespace;
+  FALLBACK_QUEUE: Queue;
   REQUEST_AND_RESPONSE_QUEUE_KV: KVNamespace;
   CLICKHOUSE_HOST: string;
   CLICKHOUSE_USER: string;
