@@ -10,6 +10,7 @@ import { buildRouter } from "./routers/routerFactory";
 import { updateLoopUsers } from "./lib/updateLoopsUsers";
 
 const FALLBACK_QUEUE = "fallback-queue";
+const REQUEST_RESPONSE_QUEUE = "request-response-queue";
 
 export type Provider = "OPENAI" | "ANTHROPIC" | "CUSTOM";
 
@@ -99,7 +100,31 @@ export default {
     }
   },
   async queue(_batch: MessageBatch<string>, env: Env): Promise<void> {
-    if (_batch.queue.includes(FALLBACK_QUEUE)) {
+    if (_batch.queue.includes(REQUEST_RESPONSE_QUEUE)) {
+      const batch = _batch as MessageBatch<RequestResponseQueuePayload>;
+
+      let sawError = false;
+      for (const message of batch.messages) {
+        if (message.body._type === "request") {
+          insertIntoRequest(
+            createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY),
+            message.body.payload
+          );
+        } else if (message.body._type === "response") {
+          insertIntoResponse(
+            createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY),
+            message.body.payload
+          );
+        } else {
+          console.error(`Unknown message type: ${message.body._type}`);
+          sawError = true;
+        }
+      }
+      if (!sawError) {
+        batch.ackAll();
+        return;
+      }
+    } else if (_batch.queue.includes(FALLBACK_QUEUE)) {
       const batch = _batch as MessageBatch<string>;
 
       let sawError = false;
