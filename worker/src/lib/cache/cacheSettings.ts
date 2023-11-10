@@ -1,4 +1,5 @@
 import { Result } from "../../results";
+import { RequestWrapper } from "../RequestWrapper";
 
 const MAX_CACHE_AGE = 60 * 60 * 24 * 365; // 365 days
 const DEFAULT_CACHE_AGE = 60 * 60 * 24 * 7; // 7 days
@@ -11,6 +12,7 @@ export interface CacheSettings {
   bucketSettings: {
     maxSize: number;
   };
+  cacheKey?: string;
 }
 
 function buildCacheControl(cacheControl: string): string {
@@ -37,29 +39,8 @@ function buildCacheControl(cacheControl: string): string {
   }
 }
 
-interface CacheHeaders {
-  cacheEnabled: boolean;
-  cacheSave: boolean;
-  cacheRead: boolean;
-  cacheBucketMaxSize: number;
-}
-
-function getCacheState(headers: Headers): CacheHeaders {
-  return {
-    cacheEnabled:
-      (headers.get("Helicone-Cache-Enabled") ?? "").toLowerCase() === "true",
-    cacheSave:
-      (headers.get("Helicone-Cache-Save") ?? "").toLowerCase() === "true",
-    cacheRead:
-      (headers.get("Helicone-Cache-Read") ?? "").toLowerCase() === "true",
-    cacheBucketMaxSize: parseInt(
-      headers.get("Helicone-Cache-Bucket-Max-Size") ?? "1"
-    ),
-  };
-}
-
 export function getCacheSettings(
-  headers: Headers,
+  requestWrapper: RequestWrapper,
   isStream: boolean
 ): Result<CacheSettings, string> {
   // streams cannot be cached
@@ -78,14 +59,16 @@ export function getCacheSettings(
   }
 
   try {
-    const cacheHeaders = getCacheState(headers);
+    const cacheHeaders = requestWrapper.getCacheState();
 
     const shouldSaveToCache =
       cacheHeaders.cacheEnabled || cacheHeaders.cacheSave;
     const shouldReadFromCache =
       cacheHeaders.cacheEnabled || cacheHeaders.cacheRead;
 
-    const cacheControl = buildCacheControl(headers.get("Cache-Control") ?? "");
+    const cacheControl = buildCacheControl(
+      requestWrapper.headers.get("Cache-Control") ?? ""
+    );
     if (cacheHeaders.cacheBucketMaxSize > MAX_BUCKET_SIZE) {
       return {
         error: `Cache bucket size cannot be greater than ${MAX_BUCKET_SIZE}`,
@@ -102,6 +85,7 @@ export function getCacheSettings(
         bucketSettings: {
           maxSize: cacheHeaders.cacheBucketMaxSize,
         },
+        cacheKey: cacheHeaders.cacheKey,
       },
     };
   } catch (e) {

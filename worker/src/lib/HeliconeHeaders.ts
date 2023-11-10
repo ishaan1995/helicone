@@ -29,6 +29,7 @@ export interface IHeliconeHeaders {
     omitRequest: boolean;
   };
   nodeId: Nullable<string>;
+  cacheKey: Nullable<string>;
 }
 
 export class HeliconeHeaders implements IHeliconeHeaders {
@@ -55,6 +56,7 @@ export class HeliconeHeaders implements IHeliconeHeaders {
   userId: Nullable<string>;
   omitHeaders: { omitResponse: boolean; omitRequest: boolean };
   nodeId: Nullable<string>;
+  cacheKey: Nullable<string>;
 
   constructor(private headers: Headers) {
     const heliconeHeaders = this.getHeliconeHeaders();
@@ -72,6 +74,7 @@ export class HeliconeHeaders implements IHeliconeHeaders {
     this.userId = heliconeHeaders.userId;
     this.heliconeProperties = this.getHeliconeProperties();
     this.nodeId = heliconeHeaders.nodeId;
+    this.cacheKey = heliconeHeaders.cacheKey;
   }
 
   private getHeliconeAuthV2(): Nullable<{
@@ -113,6 +116,7 @@ export class HeliconeHeaders implements IHeliconeHeaders {
         omitRequest: this.headers.get("Helicone-Omit-Request") === "true",
       },
       nodeId: this.headers.get("Helicone-Node-Id") ?? null,
+      cacheKey: this.headers.get("Helicone-Cache-Key") ?? null,
     };
   }
 

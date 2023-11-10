@@ -18,6 +18,13 @@ export type RequestHandlerType =
   | "logging"
   | "feedback";
 
+export interface CacheHeaders {
+  cacheEnabled: boolean;
+  cacheSave: boolean;
+  cacheRead: boolean;
+  cacheBucketMaxSize: number;
+  cacheKey?: string;
+}
 export class RequestWrapper {
   private authorization: string | undefined;
   url: URL;
@@ -144,6 +151,24 @@ export class RequestWrapper {
 
   getUrl(): string {
     return this.request.url;
+  }
+
+  getCacheState(): CacheHeaders {
+    return {
+      cacheEnabled:
+        (this.headers.get("Helicone-Cache-Enabled") ?? "").toLowerCase() ===
+        "true",
+      cacheSave:
+        (this.headers.get("Helicone-Cache-Save") ?? "").toLowerCase() ===
+        "true",
+      cacheRead:
+        (this.headers.get("Helicone-Cache-Read") ?? "").toLowerCase() ===
+        "true",
+      cacheBucketMaxSize: parseInt(
+        this.headers.get("Helicone-Cache-Bucket-Max-Size") ?? "1"
+      ),
+      cacheKey: this.heliconeHeaders.cacheKey ?? undefined,
+    };
   }
 
   async getHeliconeAuthHeader(): Promise<Result<string | null, string>> {
