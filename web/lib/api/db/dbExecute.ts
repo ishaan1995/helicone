@@ -79,16 +79,8 @@ export async function dbExecute<T>(
   query: string,
   parameters: any[]
 ): Promise<Result<T[], string>> {
-  const ssl =
-    process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "development"
-      ? {
-          rejectUnauthorized: true,
-          ca: process.env.SUPABASE_SSL_CERT_CONTENTS!.split("\\n").join("\n"),
-        }
-      : undefined;
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
-    ssl,
   });
   try {
     // Let's print out the time it takes to execute the query
