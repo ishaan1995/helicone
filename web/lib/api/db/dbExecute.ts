@@ -80,7 +80,11 @@ export async function dbExecute<T>(
   parameters: any[]
 ): Promise<Result<T[], string>> {
   const client = new Client({
-    connectionString: process.env.DATABASE_URL,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: parseInt(process.env.DB_PORT ?? ""),
   });
   try {
     // Let's print out the time it takes to execute the query
