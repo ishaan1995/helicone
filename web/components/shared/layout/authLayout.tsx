@@ -127,6 +127,12 @@ const AuthLayout = (props: AuthLayoutProps) => {
       icon: BeakerIcon,
       current: pathname.includes("/playground"),
     },
+    {
+      name: "Budget Manager",
+      href: "/budget",
+      icon: BeakerIcon,
+      current: pathname.includes("/budget"),
+    },
   ];
 
   const organizationNav = [
