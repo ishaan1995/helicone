@@ -1,11 +1,11 @@
 import UserBarChart from "./charts/barChart";
 import UserTable from "./components/table";
-import {
-  BackendMetricsCall,
-  useBackendMetricCall,
-} from "../../services/hooks/useBackendFunction";
-import { Result } from "../../lib/result";
-import { useEffect } from "react";
+// import {
+//   BackendMetricsCall,
+//   useBackendMetricCall,
+// } from "../../services/hooks/useBackendFunction";
+//import { Result } from "../../lib/result";
+//import { useEffect } from "react";
 
 function subtractDays(date: Date, days: number) {
   const result = new Date(date);
