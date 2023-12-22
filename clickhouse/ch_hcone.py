@@ -40,8 +40,6 @@ def create_migration_table(host, port, user):
         applied_date DateTime DEFAULT now()
     ) ENGINE = MergeTree() ORDER BY migration_name;
     """
-    command = generate_query(query, host, port, user)
-    print("Command: {command}")
     res = subprocess.run(generate_query(query, host, port, user), shell=True)
     if res.returncode != 0:
         print("Failed to create helicone_migrations table")
@@ -92,7 +90,7 @@ def run_migrations(host, port, user, retries=5):
                 run_migrations(host, port, user, retries)
             break
         else:
-            mark_migration_as_applied(migration_name, host, port)
+            mark_migration_as_applied(migration_name, host, port, user)
 
     print("Finished running migrations")
 
