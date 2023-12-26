@@ -13,6 +13,7 @@ import {
   Title,
 } from "@tremor/react";
 import { getUserData } from "../data/userData";
+import { useEffect } from "react";
 
 const data = [
   {
@@ -64,6 +65,10 @@ const data = [
 
 const UserTable = () => {
   const userData = getUserData();
+  useEffect(() => {
+    console.log("---user-data---");
+    console.log(userData);
+  }, [userData]);
   return (
     <Card>
       <Title>List of Swiss Federal Councillours</Title>
